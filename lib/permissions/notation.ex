@@ -30,12 +30,14 @@ defmodule Permissions.Notation do
   """
   defmacro permission(identifier, idx, opts \\ []) do
     permission_definition =
-      Macro.escape(%Definition{
-        idx: idx,
-        identifier: identifier,
-        name: Keyword.get(opts, :name, identifier),
-        group: Keyword.get(opts, :group)
-      })
+      quote do
+        %Definition{
+          idx: unquote(idx),
+          identifier: unquote(identifier),
+          name: Keyword.get(unquote(opts), :name, unquote(identifier)),
+          group: Keyword.get(unquote(opts), :group)
+        }
+      end
 
     quote do
       case Enum.filter(@permissions, fn item -> item.idx == unquote(permission_definition).idx end) do
